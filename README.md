@@ -147,47 +147,74 @@ docmind-ai/
 
 ## 🚀 Quick Start
 
+### ⚡ One-Command Startup (Windows)
+
+```bash
+start.bat
+```
+
+This will:
+1. Start backend server (http://localhost:8000)
+2. Start frontend server (http://localhost:3000)
+3. Open application in browser automatically
+
 ### Prerequisites
 - Node.js 18+
-- Python 3.11+
-- PostgreSQL
-- GitHub Personal Access Token
-- OpenAI API Key or Gemini API Key
+- Python 3.10+
+- OpenAI API Key ([Get one here](https://platform.openai.com/api-keys))
+- Git
 
-### Backend Setup
+### Installation
 
+#### 1. Clone Repository
+```bash
+git clone https://github.com/23kb1a3080-cloud/docs-ai.git
+cd docs-ai
+```
+
+#### 2. Backend Setup
 ```bash
 cd backend
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
-
-# Create .env file
-cp .env.example .env
-# Edit .env with your API keys
-
-# Run migrations
-alembic upgrade head
-
-# Start server
-uvicorn app.main:app --reload --port 8000
+.\venv\Scripts\activate  # Windows
+# source venv/bin/activate  # Linux/Mac
+pip install -r requirements-minimal.txt
 ```
 
-### Frontend Setup
-
+#### 3. Frontend Setup
 ```bash
 cd frontend
 npm install
+```
 
-# Create .env.local file
-cp .env.example .env.local
-# Edit .env.local with backend URL
+#### 4. Configuration
+Edit `backend\.env` and add your OpenAI API key:
+```env
+OPENAI_API_KEY=sk-your-actual-key-here
+```
 
-# Start development server
+#### 5. Start Application
+```bash
+# Windows - One command
+start.bat
+
+# Or manually start both servers
+# Terminal 1 - Backend
+cd backend
+.\venv\Scripts\python.exe -m uvicorn app.main:app --reload
+
+# Terminal 2 - Frontend
+cd frontend
 npm run dev
 ```
 
 Visit `http://localhost:3000`
+
+### 📚 Documentation
+- **[Quick Start](START_HERE.md)** - 3-step guide
+- **[Single Localhost Guide](SINGLE_LOCALHOST_GUIDE.md)** - One-command startup
+- **[Complete Setup](COMPLETE_SETUP.md)** - Detailed installation
+- **[Status](STATUS.md)** - Current system status
 
 ## 📊 System Architecture
 
