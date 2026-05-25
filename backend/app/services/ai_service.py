@@ -54,6 +54,46 @@ class AIService:
             print(f"AI generation error: {e}")
             raise ValueError(f"Failed to generate completion: {e}")
     
+    async def generate_chat_response(
+        self,
+        message: str,
+        history: List[Dict[str, str]] = None
+    ) -> str:
+        """
+        Generate chat response (simplified without RAG)
+        
+        Args:
+            message: User message
+            history: Chat history
+            
+        Returns:
+            AI response
+        """
+        system_prompt = """You are a helpful AI assistant for developers. 
+Answer questions about code, documentation, and software development."""
+        
+        try:
+            messages = [{"role": "system", "content": system_prompt}]
+            
+            # Add history
+            if history:
+                messages.extend(history[-10:])  # Last 10 messages
+            
+            # Add current message
+            messages.append({"role": "user", "content": message})
+            
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=messages,
+                temperature=0.7,
+                max_tokens=1000,
+            )
+            return response.choices[0].message.content
+        
+        except Exception as e:
+            print(f"Chat generation error: {e}")
+            return f"I apologize, but I encountered an error: {str(e)}"
+    
     async def generate_readme(
         self, 
         repo_info: Dict[str, Any], 

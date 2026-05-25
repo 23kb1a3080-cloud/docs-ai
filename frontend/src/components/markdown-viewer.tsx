@@ -24,9 +24,10 @@ export function MarkdownViewer({ content }: MarkdownViewerProps) {
     <div className="markdown-content prose dark:prose-invert max-w-none">
       <ReactMarkdown
         components={{
-          code({ node, inline, className, children, ...props }) {
+          code({ node, className, children, ...props }: any) {
             const match = /language-(\w+)/.exec(className || '')
             const language = match ? match[1] : ''
+            const inline = !className
 
             // Handle mermaid diagrams
             if (language === 'mermaid') {

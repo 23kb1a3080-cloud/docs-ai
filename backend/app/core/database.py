@@ -7,13 +7,32 @@ from typing import AsyncGenerator
 
 from app.core.config import settings
 
-# Create async engine
-engine = create_async_engine(
-    settings.DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://"),
-    pool_size=settings.DATABASE_POOL_SIZE,
-    max_overflow=settings.DATABASE_MAX_OVERFLOW,
-    echo=settings.DEBUG,
-)
+# Convert database URL for async driver
+db_url = settings.DATABASE_URL
+if db_url.startswith("sqlite"):
+    # Use aiosqlite for async SQLite
+    db_url = db_url.replace("sqlite:///", "sqlite+aiosqlite:///")
+    # Create async engine for SQLite (no pool settings)
+    engine = create_async_engine(
+        db_url,
+        echo=settings.DEBUG,
+    )
+elif db_url.startswith("postgresql://"):
+    # Use asyncpg for PostgreSQL
+    db_url = db_url.replace("postgresql://", "postgresql+asyncpg://")
+    # Create async engine for PostgreSQL (with pool settings)
+    engine = create_async_engine(
+        db_url,
+        pool_size=settings.DATABASE_POOL_SIZE,
+        max_overflow=settings.DATABASE_MAX_OVERFLOW,
+        echo=settings.DEBUG,
+    )
+else:
+    # Default engine
+    engine = create_async_engine(
+        db_url,
+        echo=settings.DEBUG,
+    )
 
 # Create async session factory
 AsyncSessionLocal = async_sessionmaker(

@@ -1,0 +1,23 @@
+# Minimal dependencies for quick demo
+# Core FastAPI
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+python-dotenv==1.0.0
+python-multipart==0.0.6
+
+# Database (SQLite - no external DB needed)
+sqlalchemy==2.0.25
+
+# GitHub Integration
+PyGithub==2.1.1
+
+# AI - OpenAI only (fastest)
+openai==1.10.0
+
+# Utilities
+pydantic==2.5.3
+pydantic-settings==2.1.0
+httpx==0.26.0
+
+# Markdown
+markdown==3.5.2

@@ -18,7 +18,9 @@ from app.schemas.repository import (
     SearchRequest,
     SearchResponse,
 )
-from app.services.rag_service import RAGService
+# RAG service disabled for minimal setup
+# from app.services.rag_service import RAGService
+from app.services.ai_service import AIService
 
 router = APIRouter()
 
@@ -91,13 +93,16 @@ async def send_chat_message(
         for msg in reversed(history)
     ]
     
-    # Generate response using RAG
-    rag_service = RAGService()
-    response_data = await rag_service.generate_answer(
-        str(session.repository_id),
+    # Generate response using AI (RAG disabled for minimal setup)
+    ai_service = AIService()
+    response_text = await ai_service.generate_chat_response(
         request.message,
         history_list
     )
+    response_data = {
+        'answer': response_text,
+        'sources': []
+    }
     
     # Save assistant message
     assistant_message = ChatMessage(
@@ -174,22 +179,8 @@ async def search_repository(
     if not repository:
         raise HTTPException(status_code=404, detail="Repository not found")
     
-    # Search using RAG
-    rag_service = RAGService()
-    results = await rag_service.search_repository(
-        str(request.repository_id),
-        request.query,
-        request.limit
-    )
-    
-    formatted_results = [
-        {
-            "file": r['file_path'],
-            "content": r['content'],
-            "score": r['score'],
-            "line_range": [0, 0]  # Simplified
-        }
-        for r in results
-    ]
+    # Search disabled for minimal setup (RAG not available)
+    # Return empty results
+    formatted_results = []
     
     return {"results": formatted_results}

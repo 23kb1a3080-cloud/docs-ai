@@ -17,7 +17,8 @@ from app.schemas.repository import (
     FileContentResponse,
 )
 from app.services.github_service import GitHubService
-from app.services.rag_service import RAGService
+# RAG service disabled for minimal setup
+# from app.services.rag_service import RAGService
 
 router = APIRouter()
 
@@ -32,7 +33,8 @@ async def analyze_repository(
     """
     try:
         github_service = GitHubService()
-        rag_service = RAGService()
+        # RAG service disabled for minimal setup
+        # rag_service = RAGService()
         
         # Get repository info from GitHub
         repo_info = await github_service.get_repository_info(request.github_url)
@@ -90,23 +92,23 @@ async def analyze_repository(
         
         await db.commit()
         
-        # Index repository for RAG
-        result = await db.execute(
-            select(File).where(File.repository_id == repository.id)
-        )
-        files = result.scalars().all()
-        
-        file_data = [
-            {
-                'path': f.path,
-                'content': f.content,
-                'type': f.file_type,
-                'size': len(f.content) if f.content else 0
-            }
-            for f in files
-        ]
-        
-        await rag_service.index_repository(str(repository.id), file_data)
+        # Index repository for RAG (disabled for minimal setup)
+        # result = await db.execute(
+        #     select(File).where(File.repository_id == repository.id)
+        # )
+        # files = result.scalars().all()
+        # 
+        # file_data = [
+        #     {
+        #         'path': f.path,
+        #         'content': f.content,
+        #         'type': f.file_type,
+        #         'size': len(f.content) if f.content else 0
+        #     }
+        #     for f in files
+        # ]
+        # 
+        # await rag_service.index_repository(str(repository.id), file_data)
         
         # Update last_analyzed timestamp
         from datetime import datetime
@@ -117,7 +119,10 @@ async def analyze_repository(
         return repository
     
     except Exception as e:
+        import traceback
+        error_details = traceback.format_exc()
         print(f"Failed to analyze repository: {e}")
+        print(f"Full error: {error_details}")
         raise HTTPException(status_code=400, detail=str(e))
 
 
@@ -251,9 +256,9 @@ async def delete_repository(
     if not repository:
         raise HTTPException(status_code=404, detail="Repository not found")
     
-    # Delete from vector database
-    rag_service = RAGService()
-    await rag_service.delete_repository_index(str(repository_id))
+    # Delete from vector database (disabled for minimal setup)
+    # rag_service = RAGService()
+    # await rag_service.delete_repository_index(str(repository_id))
     
     # Delete from database
     await db.delete(repository)

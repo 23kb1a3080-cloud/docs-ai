@@ -12,7 +12,13 @@ class GitHubService:
     """Service for GitHub API integration"""
     
     def __init__(self):
-        self.client = Github(settings.GITHUB_TOKEN)
+        # Only use token if it's provided and not empty
+        token = settings.GITHUB_TOKEN
+        if token and len(token.strip()) > 0:
+            self.client = Github(token)
+        else:
+            # Use unauthenticated client for public repos
+            self.client = Github()
     
     def parse_github_url(self, url: str) -> tuple[str, str]:
         """
